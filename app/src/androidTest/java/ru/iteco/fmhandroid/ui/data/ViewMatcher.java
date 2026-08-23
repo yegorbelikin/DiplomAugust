@@ -1,20 +1,25 @@
-package ru.iteco.fmhandroid.ui;
+package ru.iteco.fmhandroid.ui.data;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static androidx.test.espresso.matcher.ViewMatchers.isDisplayingAtLeast;
 import static androidx.test.espresso.matcher.ViewMatchers.isRoot;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 
 import android.os.SystemClock;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.TextView;
 
+import androidx.recyclerview.widget.RecyclerView;
 import androidx.test.espresso.PerformException;
 import androidx.test.espresso.Root;
 import androidx.test.espresso.UiController;
 import androidx.test.espresso.ViewAction;
+import androidx.test.espresso.ViewAssertion;
 import androidx.test.espresso.util.HumanReadables;
 import androidx.test.espresso.util.TreeIterables;
 import androidx.test.platform.app.InstrumentationRegistry;
@@ -22,11 +27,15 @@ import androidx.test.uiautomator.By;
 import androidx.test.uiautomator.UiDevice;
 import androidx.test.uiautomator.Until;
 
+import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.Matchers;
+import org.hamcrest.TypeSafeMatcher;
 
 import java.util.concurrent.TimeoutException;
 import java.util.regex.Pattern;
+
+import ru.iteco.fmhandroid.R;
 
 public class ViewMatcher {
     public static ViewAction waitDisplayed(final int viewId, final long millis) {
@@ -204,8 +213,129 @@ public class ViewMatcher {
             throw new AssertionError("Сообщение '" + text + "' не найдено");
         }
     }
+    public static ViewAction clickWithDelay(final long delay) {
+        return new ViewAction() {
+            @Override
+            public Matcher<View> getConstraints() {
+                return isDisplayingAtLeast(90); // элемент должен быть виден
+            }
+
+            @Override
+            public String getDescription() {
+                return "click with delay";
+            }
+
+            @Override
+            public void perform(UiController uiController, View view) {
+                uiController.loopMainThreadForAtLeast(delay); // искусственно ждем ДО клика
+                view.performClick();
+            }
+        };
+    }
+    public static ViewAction waitFor(final long delay) {
+        return new ViewAction() {
+            @Override
+            public Matcher<View> getConstraints() {
+                return isRoot();
+            }
+
+            @Override
+            public String getDescription() {
+                return "wait for " + delay + " milliseconds";
+            }
+
+            @Override
+            public void perform(UiController uiController, View view) {
+                uiController.loopMainThreadForAtLeast(delay);
+            }
+        };
+    }
 
 
-}
+
+        public static ViewAssertion verifyNewsOrder(
+        final String expectedTopTitle, final String expectedTopDate,
+        final String expectedBottomTitle, final String expectedBottomDate) {
+
+            return (view, noViewFoundException) -> {
+                if (noViewFoundException != null) throw noViewFoundException;
+
+                RecyclerView recyclerView = (RecyclerView) view;
+                RecyclerView.Adapter adapter = recyclerView.getAdapter();
+                if (adapter == null) throw new AssertionError("Адаптер RecyclerView пуст");
+
+                int topPosition = -1;
+                int bottomPosition = -1;
+                int itemCount = adapter.getItemCount();
+
+                for (int i = 0; i < itemCount; i++) {
+                    RecyclerView.ViewHolder holder = adapter.createViewHolder(recyclerView, adapter.getItemViewType(i));
+                    adapter.bindViewHolder(holder, i);
+
+                    TextView titleView = holder.itemView.findViewById(R.id.news_item_title_text_view);
+                    TextView dateView = holder.itemView.findViewById(R.id.news_item_publication_date_text_view);
+
+                    if (titleView != null && dateView != null) {
+                        String currentTitle = titleView.getText().toString();
+
+                        if (currentTitle.equals(expectedTopTitle)) {
+                            topPosition = i;
+                        }
+                        if (currentTitle.equals(expectedBottomTitle)) {
+                            bottomPosition = i;
+                        }
+                    }
+                }
+
+                org.junit.Assert.assertTrue("Не найдена новость сверху: " + expectedTopTitle, topPosition != -1);
+                org.junit.Assert.assertTrue("Не найдена новость снизу: " + expectedBottomTitle, bottomPosition != -1);
+
+                // Меньший индекс в RecyclerView означает, что элемент находится выше на экране
+                org.junit.Assert.assertTrue(
+                        "Ошибка сортировки! Новость '" + expectedTopTitle + "' должна быть выше новости '" + expectedBottomTitle + "'",
+                        topPosition < bottomPosition
+                );
+            };
+        }
+
+
+    public static ViewAssertion checkNewsIsMissing(final String titleToDelete) {
+        return (view, noViewFoundException) -> {
+            if (noViewFoundException != null) throw noViewFoundException;
+
+            RecyclerView recyclerView = (RecyclerView) view;
+            RecyclerView.Adapter adapter = recyclerView.getAdapter();
+            if (adapter == null) return; // Если список пуст, значит элемент точно отфильтрован
+
+            int itemCount = adapter.getItemCount();
+            for (int i = 0; i < itemCount; i++) {
+                RecyclerView.ViewHolder holder = adapter.createViewHolder(recyclerView, adapter.getItemViewType(i));
+                adapter.bindViewHolder(holder, i);
+
+                TextView titleView = holder.itemView.findViewById(R.id.news_item_title_text_view);
+                if (titleView != null) {
+                    String currentTitle = titleView.getText().toString();
+                    if (currentTitle.equals(titleToDelete)) {
+                        org.junit.Assert.fail("Фильтр не сработал! Новость '" + titleToDelete + "' всё ещё присутствует в списке.");
+                    }
+                }
+            }
+        };
+    }
+
+
+
+
+
+
+
+
+
+    }
+
+
+
+
+
 
 

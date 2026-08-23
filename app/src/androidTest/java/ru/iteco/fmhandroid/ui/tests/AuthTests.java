@@ -1,5 +1,6 @@
-package ru.iteco.fmhandroid.ui;
-
+package ru.iteco.fmhandroid.ui.tests;
+import ru.iteco.fmhandroid.ui.AppActivity;
+import ru.iteco.fmhandroid.ui.pages.BaseTest;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
@@ -9,10 +10,13 @@ import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isAssignableFrom;
 import static androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static androidx.test.espresso.matcher.ViewMatchers.isRoot;
 import static androidx.test.espresso.matcher.ViewMatchers.withEffectiveVisibility;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.allOf;
+
+import static ru.iteco.fmhandroid.ui.data.ViewMatcher.waitDisplayed;
 
 import android.widget.EditText;
 
@@ -75,6 +79,7 @@ public class AuthTests extends BaseTest {
     public void validUser() {
         logoutIfNeeded();
         performLogin(login, password);
+        onView(isRoot()).perform(waitDisplayed(R.id.main_menu_image_button, 10000));
         ViewInteraction imageButton = onView(withId(R.id.main_menu_image_button));
         imageButton.check(matches(withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE)));
 
@@ -83,6 +88,7 @@ public class AuthTests extends BaseTest {
     @Test
     public void InvalidLoginUser() {
         logoutIfNeeded();
+        onView(isRoot()).perform(waitDisplayed(R.id.login_text_input_layout, 10000));
         ViewInteraction loginField = onView(
                 allOf(isAssignableFrom(EditText.class),
                         isDescendantOfA(withId(R.id.login_text_input_layout))));
@@ -94,7 +100,7 @@ public class AuthTests extends BaseTest {
         passwordField.check(matches(isDisplayed()));
         passwordField.perform(replaceText(password), closeSoftKeyboard());
         onView(withId(R.id.enter_button)).perform(click());
-//
+
         onView(withText(ru.iteco.fmhandroid.R.string.error))
                 .inRoot(org.hamcrest.Matchers.not(androidx.test.espresso.matcher.RootMatchers.isFocusable()))
                 .check(matches(isDisplayed()));
@@ -104,6 +110,7 @@ public class AuthTests extends BaseTest {
     @Test
     public void InvalidPasswordUser() {
         logoutIfNeeded();
+        onView(isRoot()).perform(waitDisplayed(R.id.login_text_input_layout, 10000));
         ViewInteraction loginField = onView(
                 allOf(isAssignableFrom(EditText.class),
                         isDescendantOfA(withId(R.id.login_text_input_layout))));
@@ -125,6 +132,7 @@ public class AuthTests extends BaseTest {
     @Test
     public void EmptyPasswordUser() {
         logoutIfNeeded();
+        onView(isRoot()).perform(waitDisplayed(R.id.login_text_input_layout, 10000));
         ViewInteraction loginField = onView(
                 allOf(isAssignableFrom(EditText.class),
                         isDescendantOfA(withId(R.id.login_text_input_layout))));
@@ -133,7 +141,7 @@ public class AuthTests extends BaseTest {
         ViewInteraction passwordField = onView(
                 allOf(isAssignableFrom(EditText.class),
                         isDescendantOfA(withId(R.id.password_text_input_layout))));
-        passwordField.check(matches(isDisplayed()));
+               passwordField.check(matches(isDisplayed()));
         passwordField.perform(replaceText(""), closeSoftKeyboard());
         onView(withId(R.id.enter_button)).perform(click());
         onView(withText(ru.iteco.fmhandroid.R.string.empty_login_or_password))

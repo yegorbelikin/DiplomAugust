@@ -81,7 +81,6 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:$lifecycle_version"
     implementation "androidx.lifecycle:lifecycle-runtime-ktx:$lifecycle_version"
-    //noinspection LifecycleAnnotationProcessorWithJava8
     kapt "androidx.lifecycle:lifecycle-compiler:$lifecycle_version"
     implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"
     implementation "androidx.navigation:navigation-ui-ktx:$nav_version"
@@ -96,7 +95,16 @@ dependencies {
     androidTestImplementation 'androidx.test.uiautomator:uiautomator:2.2.0'
     androidTestImplementation 'androidx.test.espresso:espresso-contrib:3.5.0'
     implementation 'androidx.test.espresso:espresso-idling-resource:3.7.0'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.0-alpha05'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.4-alpha05'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.0'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'io.qameta.allure:allure-kotlin-android:2.4.0'
+    androidTestImplementation 'androidx.test:runner:1.5.2'
+    androidTestImplementation 'androidx.test:rules:1.5.0'
+    androidTestImplementation 'org.hamcrest:hamcrest-library:2.2'
+    configurations.all {
+        resolutionStrategy {
+            force 'org.hamcrest:hamcrest-core:2.2'
+            force 'org.hamcrest:hamcrest-library:2.2'
+        }
+    }
 }

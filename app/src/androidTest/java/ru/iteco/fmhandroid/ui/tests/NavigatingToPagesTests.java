@@ -21,7 +21,6 @@ import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.anything;
 
-import static ru.iteco.fmhandroid.ui.data.ViewMatcher.clickWithDelay;
 import static ru.iteco.fmhandroid.ui.data.ViewMatcher.waitFor;
 
 import androidx.test.espresso.Espresso;

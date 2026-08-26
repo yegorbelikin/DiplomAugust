@@ -91,20 +91,40 @@ dependencies {
     implementation platform('com.google.firebase:firebase-bom:29.0.3')
     implementation 'com.google.firebase:firebase-analytics-ktx'
     implementation 'com.google.firebase:firebase-crashlytics-ktx'
-    androidTestImplementation 'androidx.test.espresso:espresso-intents:3.4.0'
-    androidTestImplementation 'androidx.test.uiautomator:uiautomator:2.2.0'
-    androidTestImplementation 'androidx.test.espresso:espresso-contrib:3.5.0'
     implementation 'androidx.test.espresso:espresso-idling-resource:3.7.0'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.0'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
-    androidTestImplementation 'io.qameta.allure:allure-kotlin-android:2.4.0'
-    androidTestImplementation 'androidx.test:runner:1.5.2'
+
+
+
+
+
+
+    // Должны быть единые версии для всех тестовых библиотек
+    androidTestImplementation 'androidx.test:core:1.5.0'
+    androidTestImplementation 'androidx.test:1.5.2'
     androidTestImplementation 'androidx.test:rules:1.5.0'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
+    androidTestImplementation 'androidx.test.espresso:espresso-intents:3.5.1'
+    androidTestImplementation 'androidx.test.espresso:espresso-contrib:3.5.1'
+    androidTestImplementation 'androidx.test.uiautomator:uiautomator:2.2.0'
+
+    // Allure должен быть последним и НЕ переопределять Hamcrest
+    androidTestImplementation 'io.qameta.allure:allure-kotlin-android:2.4.0'
+
+    // Принудительно указываем одну версию Hamcrest
+    androidTestImplementation 'org.hamcrest:hamcrest:2.2'
     androidTestImplementation 'org.hamcrest:hamcrest-library:2.2'
+    androidTestImplementation 'org.hamcrest:hamcrest-core:2.2'
+
+
     configurations.all {
         resolutionStrategy {
             force 'org.hamcrest:hamcrest-core:2.2'
             force 'org.hamcrest:hamcrest-library:2.2'
+            force 'org.hamcrest:hamcrest:2.2'
+            force 'androidx.test.espresso:espresso-core:3.5.1'
+            force 'androidx.test:1.5.2'
+            force 'androidx.test.ext:junit:1.1.5'
         }
     }
 }

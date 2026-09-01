@@ -106,11 +106,15 @@ public class BaseTest {
                 .perform(PickerActions.setDate(year, month, day));
         Espresso.onIdle();
         onView(withId(android.R.id.button1)).perform(click());
+        waitForElement(R.id.news_item_category_text_auto_complete_text_view, 5000);
+
         onView(withId(R.id.news_item_publish_time_text_input_edit_text)).perform(click());
         onView(withClassName(equalTo(android.widget.TimePicker.class.getName())))
                 .perform(PickerActions.setTime(hour, minute));
         Espresso.onIdle();
         onView(withId(android.R.id.button1)).perform(click());
+        waitForElement(R.id.news_item_category_text_auto_complete_text_view, 5000);
+
         safeType(R.id.news_item_description_text_input_edit_text, description);
         safeClick(R.id.save_button);
         Espresso.onIdle();

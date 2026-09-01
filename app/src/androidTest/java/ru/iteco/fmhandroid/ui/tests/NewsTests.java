@@ -148,8 +148,9 @@ public class NewsTests extends BaseTest {
                 .perform(click());
         Espresso.onIdle();
         safeType(R.id.news_item_title_text_input_edit_text, newsTitle);
-        onView(withId(R.id.news_item_publish_date_text_input_edit_text)).perform(click());
+
         Espresso.onIdle();
+
         onView(withId(R.id.news_item_publish_time_text_input_edit_text)).perform(click());
         onView(withClassName(equalTo(android.widget.TimePicker.class.getName())))
                 .perform(PickerActions.setTime(hour, minute));
@@ -246,21 +247,22 @@ public class NewsTests extends BaseTest {
     }
 
 
-//    @Test
-//    public void createNewsWithWrongTime() {
-//        onView(isRoot()).perform(waitFor(500));
-//        int wrongHour = calendar.get(Calendar.HOUR_OF_DAY) - 1;
-//        logoutIfNeeded();
-//        performLogin(login, password);
-//        onView(withId(R.id.all_news_text_view)).perform(click());
-//        onView(withId(R.id.edit_news_material_button)).perform(click());
-//        onView(withId(R.id.add_news_image_view)).perform(click());
-//        create(newsTitle, "Массаж", "Тайский массаж", year, month, day, wrongHour, minute);
-//        onView(withText("Установленное время уже прошло"))
-//                .inRoot(org.hamcrest.Matchers.not(androidx.test.espresso.matcher.RootMatchers.isFocusable()))
-//                .check(matches(isDisplayed()));
-//        onView(isRoot()).perform(waitFor(500));
-//    }
+    @Test
+    public void createNewsWithWrongTime() {
+        int wrongHour = calendar.get(Calendar.HOUR_OF_DAY) - 1;
+        logoutIfNeeded();
+        performLogin(login, password);
+        safeClick(R.id.all_news_text_view);
+        waitForElement(R.id.edit_news_material_button, 5000);
+        safeClick(R.id.edit_news_material_button);
+        waitForElement(R.id.add_news_image_view, 5000);
+        safeClick(R.id.add_news_image_view);
+        waitForElement(R.id.news_item_category_text_auto_complete_text_view, 5000);
+        create(newsTitle, "Массаж", "Тайский массаж", year, month, day, wrongHour, minute);
+        onView(withText("Установленное время уже прошло"))
+                .inRoot(org.hamcrest.Matchers.not(androidx.test.espresso.matcher.RootMatchers.isFocusable()))
+                .check(matches(isDisplayed()));
+    }
 
 
     @Test
@@ -370,7 +372,31 @@ public class NewsTests extends BaseTest {
                 isDisplayed()))
                 .perform(click());
         Espresso.onIdle();
-        create(newsTitle + 1, "Зарплата", "Премия", editYear, editMonth, editDay, editHour, editMinute);
+
+
+        onView(withId(R.id.news_item_category_text_auto_complete_text_view))
+                .perform(click(), clearText(), click());
+        onData(allOf(is(instanceOf(String.class)), is("Зарплата")))
+                .inRoot(isPlatformPopup())
+                .perform(click());
+        Espresso.onIdle();
+        safeType(R.id.news_item_title_text_input_edit_text, newsTitle + 1);
+        onView(withId(R.id.news_item_publish_date_text_input_edit_text)).perform(click());
+        onView(withClassName(equalTo(android.widget.DatePicker.class.getName())))
+                .perform(PickerActions.setDate(editYear, editMonth, editDay));
+        Espresso.onIdle();
+        onView(withId(android.R.id.button1)).perform(click());
+        waitForElement(R.id.news_item_category_text_auto_complete_text_view, 5000);
+
+        onView(withId(R.id.news_item_publish_time_text_input_edit_text)).perform(click());
+        onView(withClassName(equalTo(android.widget.TimePicker.class.getName())))
+                .perform(PickerActions.setTime(editHour, editMinute));
+        Espresso.onIdle();
+        onView(withId(android.R.id.button1)).perform(click());
+        waitForElement(R.id.news_item_category_text_auto_complete_text_view, 5000);
+
+        safeType(R.id.news_item_description_text_input_edit_text, "Премия");
+        safeClick(R.id.save_button);
         Espresso.onIdle();
         onView(withId(R.id.news_list_recycler_view))
                 .perform(RecyclerViewActions.scrollTo(

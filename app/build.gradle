@@ -115,8 +115,6 @@ android {
         androidTestUtil 'androidx.test:orchestrator:1.4.2'
         configurations.all {
             resolutionStrategy {
-//            force 'org.hamcrest:hamcrest-core:2.2'
-//            force 'org.hamcrest:hamcrest-library:2.2'
                 force 'org.hamcrest:hamcrest:2.2'
                 dependencySubstitution {
                     substitute module('org.hamcrest:hamcrest-core') using module('org.hamcrest:hamcrest:2.2')

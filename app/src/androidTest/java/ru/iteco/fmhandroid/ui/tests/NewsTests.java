@@ -65,7 +65,6 @@ public class NewsTests extends BaseTest {
     @BeforeClass
     public static void disableAnimations() {
         // Принудительно отключаем анимации через ADB shell перед запуском тестов в классе
-
         InstrumentationRegistry.getInstrumentation().getUiAutomation()
                 .executeShellCommand("settings put global window_animation_scale 0");
         InstrumentationRegistry.getInstrumentation().getUiAutomation()
@@ -148,9 +147,7 @@ public class NewsTests extends BaseTest {
                 .perform(click());
         Espresso.onIdle();
         safeType(R.id.news_item_title_text_input_edit_text, newsTitle);
-
         Espresso.onIdle();
-
         onView(withId(R.id.news_item_publish_time_text_input_edit_text)).perform(click());
         onView(withClassName(equalTo(android.widget.TimePicker.class.getName())))
                 .perform(PickerActions.setTime(hour, minute));
@@ -175,7 +172,6 @@ public class NewsTests extends BaseTest {
         waitForElement(R.id.add_news_image_view, 5000);
         safeClick(R.id.add_news_image_view);
         waitForElement(R.id.news_item_category_text_auto_complete_text_view, 5000);
-
         onView(withId(R.id.news_item_category_text_auto_complete_text_view))
                 .perform(click());
         onData(allOf(is(instanceOf(String.class)), is("Массаж")))
@@ -188,17 +184,10 @@ public class NewsTests extends BaseTest {
                 .perform(PickerActions.setDate(year, month, day));
         Espresso.onIdle();
         onView(withId(android.R.id.button1)).perform(click());
-
         Espresso.onIdle();
-
         safeType(R.id.news_item_description_text_input_edit_text, "Тайский массаж");
         safeClick(R.id.save_button);
         Espresso.onIdle();
-
-
-
-
-
         onView(withText(ru.iteco.fmhandroid.R.string.empty_fields))
                 .inRoot(org.hamcrest.Matchers.not(androidx.test.espresso.matcher.RootMatchers.isFocusable()))
                 .check(matches(isDisplayed()));
@@ -216,7 +205,6 @@ public class NewsTests extends BaseTest {
         waitForElement(R.id.add_news_image_view, 5000);
         safeClick(R.id.add_news_image_view);
         waitForElement(R.id.news_item_category_text_auto_complete_text_view, 5000);
-
         onView(withId(R.id.news_item_category_text_auto_complete_text_view))
                 .perform(click());
         onData(allOf(is(instanceOf(String.class)), is("Массаж")))
@@ -236,10 +224,6 @@ public class NewsTests extends BaseTest {
         onView(withId(android.R.id.button1)).perform(click());
         safeClick(R.id.save_button);
         Espresso.onIdle();
-
-
-
-
         onView(withText(ru.iteco.fmhandroid.R.string.empty_fields))
                 .inRoot(org.hamcrest.Matchers.not(androidx.test.espresso.matcher.RootMatchers.isFocusable()))
                 .check(matches(isDisplayed()));
@@ -372,8 +356,6 @@ public class NewsTests extends BaseTest {
                 isDisplayed()))
                 .perform(click());
         Espresso.onIdle();
-
-
         onView(withId(R.id.news_item_category_text_auto_complete_text_view))
                 .perform(click(), clearText(), click());
         onData(allOf(is(instanceOf(String.class)), is("Зарплата")))
@@ -394,7 +376,6 @@ public class NewsTests extends BaseTest {
         Espresso.onIdle();
         onView(withId(android.R.id.button1)).perform(click());
         waitForElement(R.id.news_item_category_text_auto_complete_text_view, 5000);
-
         safeType(R.id.news_item_description_text_input_edit_text, "Премия");
         safeClick(R.id.save_button);
         Espresso.onIdle();
@@ -429,7 +410,6 @@ public class NewsTests extends BaseTest {
 
     @Test
     public void editNewsWithEmptyCategories() {
-
         calendar.add(Calendar.HOUR_OF_DAY, 1);
         logoutIfNeeded();
         performLogin(login, password);
@@ -446,7 +426,6 @@ public class NewsTests extends BaseTest {
                 .perform(RecyclerViewActions.scrollTo(
                         hasDescendant(withText(newsTitle))));
         Espresso.onIdle();
-
         ViewInteraction textView = onView(
                 allOf(withId(R.id.news_item_title_text_view), withText(newsTitle),
                         withParent(withParent(withId(R.id.news_item_material_card_view))),
@@ -501,8 +480,6 @@ public class NewsTests extends BaseTest {
                 isDisplayed()))
                 .perform(click());
         Espresso.onIdle();
-
-
         onView(withId(R.id.news_item_publish_date_text_input_edit_text)).perform(clearText());
         onView(withId(R.id.save_button)).perform(click());
         Espresso.onIdle();
@@ -541,8 +518,6 @@ public class NewsTests extends BaseTest {
                 isDisplayed()))
                 .perform(click());
         Espresso.onIdle();
-
-
         onView(withId(R.id.news_item_publish_time_text_input_edit_text)).perform(clearText());
         onView(withId(R.id.save_button)).perform(click());
         Espresso.onIdle();
@@ -633,7 +608,6 @@ public class NewsTests extends BaseTest {
     public void sortNews() {
         calendar.add(Calendar.HOUR_OF_DAY, 1);
         int editMonth = calendar.get(Calendar.MONTH) + 2;
-
         logoutIfNeeded();
         performLogin(login, password);
         safeClick(R.id.all_news_text_view);
@@ -653,7 +627,6 @@ public class NewsTests extends BaseTest {
                         withParent(withParent(withId(R.id.news_item_material_card_view))),
                         isDisplayed()));
         firstTextView.check(matches(withText(newsTitle)));
-
         onView(withId(R.id.add_news_image_view)).perform(click());
         Espresso.onIdle();
         create(newsTitle + 1, "Массаж", "Тайский массаж", year, editMonth, day, hour, minute);
@@ -662,22 +635,17 @@ public class NewsTests extends BaseTest {
                 .perform(RecyclerViewActions.scrollTo(
                         hasDescendant(withText(newsTitle + 1))));
         Espresso.onIdle();
-
         ViewInteraction secondTextView = onView(
                 allOf(withId(R.id.news_item_title_text_view), withText(newsTitle + 1),
                         withParent(withParent(withId(R.id.news_item_material_card_view))),
                         isDisplayed()));
         secondTextView.check(matches(withText(newsTitle + 1)));
-
         String earlyDateText = String.format("%02d.%02d.%d", day, month, year);
         String laterDateText = String.format("%02d.%02d.%d", day, editMonth, year);
-
         onView(withId(R.id.news_list_recycler_view))
                 .check(verifyNewsOrder(newsTitle + 1, laterDateText, newsTitle, earlyDateText));
-
         onView(withId(R.id.sort_news_material_button)).perform(click());
         Espresso.onIdle();
-
         onView(withId(R.id.news_list_recycler_view))
                 .perform(RecyclerViewActions.scrollTo(hasDescendant(withText(newsTitle + 1))));
         Espresso.onIdle();
@@ -690,7 +658,6 @@ public class NewsTests extends BaseTest {
     public void filterNews() {
         calendar.add(Calendar.HOUR_OF_DAY, 1);
         int editMonth = calendar.get(Calendar.MONTH) + 2;
-
         logoutIfNeeded();
         performLogin(login, password);
         safeClick(R.id.all_news_text_view);
@@ -711,7 +678,6 @@ public class NewsTests extends BaseTest {
                         withParent(withParent(withId(R.id.news_item_material_card_view))),
                         isDisplayed()));
         firstTextView.check(matches(withText(newsTitle)));
-
         onView(withId(R.id.add_news_image_view)).perform(click());
         Espresso.onIdle();
         create(newsTitle + 1, "Зарплата", "Тайский массаж", year, editMonth, day, hour, minute);
@@ -720,27 +686,21 @@ public class NewsTests extends BaseTest {
                 .perform(RecyclerViewActions.scrollTo(
                         hasDescendant(withText(newsTitle + 1))));
         Espresso.onIdle();
-
         ViewInteraction secondTextView = onView(
                 allOf(withId(R.id.news_item_title_text_view), withText(newsTitle + 1),
                         withParent(withParent(withId(R.id.news_item_material_card_view))),
                         isDisplayed()));
         secondTextView.check(matches(withText(newsTitle + 1)));
-
         onView(withId(R.id.filter_news_material_button)).perform(click());
-
         onView(withId(R.id.news_item_category_text_auto_complete_text_view)).perform(click(), clearText(), click());
         onData(allOf(is(instanceOf(String.class)), is("Массаж")))
                 .inRoot(isPlatformPopup())
                 .perform(click());
         onView(withId(R.id.filter_button)).perform(click());
-
         onView(withId(R.id.news_list_recycler_view))
                 .perform(RecyclerViewActions.scrollTo(hasDescendant(withText(newsTitle))));
-
         onView(allOf(withId(R.id.news_item_title_text_view), withText(newsTitle)))
                 .check(matches(isDisplayed()));
-
         onView(withId(R.id.news_list_recycler_view))
                 .check(checkNewsIsMissing(newsTitle + 1));
     }

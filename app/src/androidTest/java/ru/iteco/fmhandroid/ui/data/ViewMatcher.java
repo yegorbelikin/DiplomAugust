@@ -64,11 +64,6 @@ public class ViewMatcher {
     }
 
 
-
-
-
-
-
     public static ViewAction waitFor(final long delay) {
         return new ViewAction() {
             @Override
@@ -89,51 +84,48 @@ public class ViewMatcher {
     }
 
 
+    public static ViewAssertion verifyNewsOrder(
+            final String expectedTopTitle, final String expectedTopDate,
+            final String expectedBottomTitle, final String expectedBottomDate) {
 
-        public static ViewAssertion verifyNewsOrder(
-        final String expectedTopTitle, final String expectedTopDate,
-        final String expectedBottomTitle, final String expectedBottomDate) {
+        return (view, noViewFoundException) -> {
+            if (noViewFoundException != null) throw noViewFoundException;
 
-            return (view, noViewFoundException) -> {
-                if (noViewFoundException != null) throw noViewFoundException;
+            RecyclerView recyclerView = (RecyclerView) view;
+            RecyclerView.Adapter adapter = recyclerView.getAdapter();
+            if (adapter == null) throw new AssertionError("Адаптер RecyclerView пуст");
 
-                RecyclerView recyclerView = (RecyclerView) view;
-                RecyclerView.Adapter adapter = recyclerView.getAdapter();
-                if (adapter == null) throw new AssertionError("Адаптер RecyclerView пуст");
+            int topPosition = -1;
+            int bottomPosition = -1;
+            int itemCount = adapter.getItemCount();
 
-                int topPosition = -1;
-                int bottomPosition = -1;
-                int itemCount = adapter.getItemCount();
+            for (int i = 0; i < itemCount; i++) {
+                RecyclerView.ViewHolder holder = adapter.createViewHolder(recyclerView, adapter.getItemViewType(i));
+                adapter.bindViewHolder(holder, i);
 
-                for (int i = 0; i < itemCount; i++) {
-                    RecyclerView.ViewHolder holder = adapter.createViewHolder(recyclerView, adapter.getItemViewType(i));
-                    adapter.bindViewHolder(holder, i);
+                TextView titleView = holder.itemView.findViewById(R.id.news_item_title_text_view);
+                TextView dateView = holder.itemView.findViewById(R.id.news_item_publication_date_text_view);
 
-                    TextView titleView = holder.itemView.findViewById(R.id.news_item_title_text_view);
-                    TextView dateView = holder.itemView.findViewById(R.id.news_item_publication_date_text_view);
+                if (titleView != null && dateView != null) {
+                    String currentTitle = titleView.getText().toString();
 
-                    if (titleView != null && dateView != null) {
-                        String currentTitle = titleView.getText().toString();
-
-                        if (currentTitle.equals(expectedTopTitle)) {
-                            topPosition = i;
-                        }
-                        if (currentTitle.equals(expectedBottomTitle)) {
-                            bottomPosition = i;
-                        }
+                    if (currentTitle.equals(expectedTopTitle)) {
+                        topPosition = i;
+                    }
+                    if (currentTitle.equals(expectedBottomTitle)) {
+                        bottomPosition = i;
                     }
                 }
+            }
 
-                org.junit.Assert.assertTrue("Не найдена новость сверху: " + expectedTopTitle, topPosition != -1);
-                org.junit.Assert.assertTrue("Не найдена новость снизу: " + expectedBottomTitle, bottomPosition != -1);
-
-                // Меньший индекс в RecyclerView означает, что элемент находится выше на экране
-                org.junit.Assert.assertTrue(
-                        "Ошибка сортировки! Новость '" + expectedTopTitle + "' должна быть выше новости '" + expectedBottomTitle + "'",
-                        topPosition < bottomPosition
-                );
-            };
-        }
+            org.junit.Assert.assertTrue("Не найдена новость сверху: " + expectedTopTitle, topPosition != -1);
+            org.junit.Assert.assertTrue("Не найдена новость снизу: " + expectedBottomTitle, bottomPosition != -1);
+            org.junit.Assert.assertTrue(
+                    "Ошибка сортировки! Новость '" + expectedTopTitle + "' должна быть выше новости '" + expectedBottomTitle + "'",
+                    topPosition < bottomPosition
+            );
+        };
+    }
 
 
     public static ViewAssertion checkNewsIsMissing(final String titleToDelete) {
@@ -142,7 +134,7 @@ public class ViewMatcher {
 
             RecyclerView recyclerView = (RecyclerView) view;
             RecyclerView.Adapter adapter = recyclerView.getAdapter();
-            if (adapter == null) return; // Если список пуст, значит элемент точно отфильтрован
+            if (adapter == null) return;
 
             int itemCount = adapter.getItemCount();
             for (int i = 0; i < itemCount; i++) {
@@ -161,14 +153,7 @@ public class ViewMatcher {
     }
 
 
-
-
-
-
-
-
-
-    }
+}
 
 
 

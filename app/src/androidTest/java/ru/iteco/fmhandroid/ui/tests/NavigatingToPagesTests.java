@@ -1,7 +1,4 @@
 package ru.iteco.fmhandroid.ui.tests;
-import ru.iteco.fmhandroid.ui.AppActivity;
-import ru.iteco.fmhandroid.ui.pages.BaseTest;
-
 
 import static androidx.test.espresso.Espresso.onData;
 import static androidx.test.espresso.Espresso.onView;
@@ -20,7 +17,6 @@ import static androidx.test.espresso.matcher.ViewMatchers.withParent;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.anything;
-
 import static ru.iteco.fmhandroid.ui.data.ViewMatcher.waitFor;
 
 import androidx.test.espresso.Espresso;
@@ -42,6 +38,8 @@ import org.junit.runner.RunWith;
 import io.qameta.allure.android.runners.AllureAndroidJUnit4;
 import ru.iteco.fmhandroid.EspressoIdlingResources;
 import ru.iteco.fmhandroid.R;
+import ru.iteco.fmhandroid.ui.AppActivity;
+import ru.iteco.fmhandroid.ui.pages.BaseTest;
 
 @LargeTest
 @RunWith(AllureAndroidJUnit4.class)
@@ -106,13 +104,11 @@ public class NavigatingToPagesTests extends BaseTest {
                         isDisplayed()));
         textView.check(matches(withText(titleMissionText)));
         Espresso.onIdle();
-
         onView(allOf(
                 withId(R.id.our_mission_item_material_card_view),
                 hasDescendant(withText(titleMissionText)),
                 isDisplayingAtLeast(90)
         )).perform(click());
-        onView(isRoot()).perform(waitFor(1000));
         onView(withId(R.id.our_mission_item_list_recycler_view))
                 .perform(swipeUp());
         Espresso.onIdle();
@@ -159,7 +155,6 @@ public class NavigatingToPagesTests extends BaseTest {
                 allOf(withId(R.id.about_terms_of_use_value_text_view), withText(termsLink),
                         isDisplayed()));
         termsView.check(matches(withText(termsLink)));
-
 
 
     }
